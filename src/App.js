@@ -1,25 +1,56 @@
+import 'antd/dist/antd.css'
 import React from 'react'
-import axios from 'axios'
+import { connect } from 'react-redux'
+import { Spin } from 'antd'
 
-const sendDataToApi = data => axios.post('http://localhost:5000', data)
+import { submitForm } from './redux/actions'
+
 const validateSubmission = (pass1, pass2) => pass1 && pass1 === pass2
 
-const App = () => {
+const App = ({ error, isLoading, message, submitForm }) => {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
   const [utm, setUtm] = React.useState('')
   const handleChange = setter => e => setter(e.target.value)
-  const handleSubmit = _ =>
-    validateSubmission(password, confirmPassword) &&
-    sendDataToApi({ email, password, utm })
+  const handleSubmit = e =>
+    e.preventDefault() ||
+    (validateSubmission(password, confirmPassword) &&
+      submitForm({ email, password, utm }))
 
   React.useEffect(() => {
     setUtm('foogazy')
   }, [])
 
+  const disabledCss = !isLoading
+    ? {}
+    : {
+      pointerEvents: 'none',
+      opacity: 0.5,
+      background: '#ccc'
+    }
+
+  const spinnerCSS = !isLoading
+    ? { display: 'none' }
+    : {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      display: 'block'
+    }
+
+  if (error) return <p>{message}</p>
+
   return (
-    <div style={{ width: '50%', margin: 'auto', marginTop: '50px' }}>
+    <div
+      style={{
+        width: '50%',
+        margin: 'auto',
+        marginTop: '50px',
+        ...disabledCss
+      }}
+    >
+      <Spin style={spinnerCSS} />
       <form onSubmit={handleSubmit}>
         <input type='hidden' data-testid='hidden' value={utm} />
         <div className='form-group'>
@@ -76,4 +107,17 @@ const App = () => {
   )
 }
 
-export default App
+const mapStateToProps = ({ error, isLoading, message }) => ({
+  error,
+  isLoading,
+  message
+})
+
+const mapDispatchToProps = dispatch => ({
+  submitForm: user => dispatch(submitForm(user))
+})
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
