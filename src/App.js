@@ -2,12 +2,14 @@ import 'antd/dist/antd.css'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
+import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 
 import { submitForm } from './redux/actions'
 
 const validateSubmission = (pass1, pass2) => pass1 && pass1 === pass2
 
-const App = ({ error, isLoading, message, submitForm }) => {
+const App = ({ error, isLoading, message, submitForm, history, shouldRedirect }) => {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
@@ -17,6 +19,8 @@ const App = ({ error, isLoading, message, submitForm }) => {
     e.preventDefault() ||
     (validateSubmission(password, confirmPassword) &&
       submitForm({ email, password, utm }))
+
+  if(shouldRedirect) history.push('/success')
 
   React.useEffect(() => {
     setUtm('foogazy')
@@ -107,17 +111,21 @@ const App = ({ error, isLoading, message, submitForm }) => {
   )
 }
 
-const mapStateToProps = ({ error, isLoading, message }) => ({
+const mapStateToProps = ({ error, isLoading, message, shouldRedirect }) => ({
   error,
   isLoading,
-  message
+  message,
+  shouldRedirect
 })
 
 const mapDispatchToProps = dispatch => ({
   submitForm: user => dispatch(submitForm(user))
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+export default compose(
+  withRouter,
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
 )(App)

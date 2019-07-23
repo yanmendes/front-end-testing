@@ -3,7 +3,8 @@ import { types } from './actions'
 export const initialState = {
   isLoading: false,
   message: '',
-  error: false
+  error: false,
+  shouldRedirect: false
 }
 
 const order = (state = initialState, action) => {
@@ -16,14 +17,15 @@ const order = (state = initialState, action) => {
     case types.SUBMIT_FORM_ERROR:
       return {
         error: true,
-        isSubmiting: false,
+        isLoading: false,
         message: 'Something went wrong while submiting the form'
       }
     case types.SUBMIT_FORM_SUCCESS:
       return {
         error: false,
-        isSubmiting: false,
-        message: 'Form sent successfully'
+        isLoading: false,
+        message: 'Form sent successfully',
+        shouldRedirect: true
       }
     default:
       return state

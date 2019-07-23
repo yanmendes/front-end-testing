@@ -16,14 +16,9 @@ export const submitForm = user => dispatch =>
           type: types.SUBMIT_FORM_SUCCESS
         })
       )
-      .catch(error =>
-        setTimeout(
-          () =>
-            dispatch({
-              type: types.SUBMIT_FORM_ERROR,
-              error
-            }),
-          5000
-        )
+      .catch(_ =>
+        dispatch({
+          type: types.SUBMIT_FORM_ERROR
+        })
       )
   })
