@@ -8,20 +8,14 @@ const App = () => {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
   const [confirmPassword, setConfirmPassword] = React.useState('')
-  const [utm, setUtm] = React.useState('')
   const handleChange = setter => e => setter(e.target.value)
   const handleSubmit = _ =>
     validateSubmission(password, confirmPassword) &&
-    sendDataToApi({ email, password, utm })
-
-  React.useEffect(() => {
-    setUtm('foogazy')
-  }, [])
+    sendDataToApi({ email, password })
 
   return (
     <div style={{ width: '50%', margin: 'auto', marginTop: '50px' }}>
       <form onSubmit={handleSubmit}>
-        <input type='hidden' data-testid='hidden' value={utm} />
         <div className='form-group'>
           <label className='form-check-label' id='emailLabel'>
             Email

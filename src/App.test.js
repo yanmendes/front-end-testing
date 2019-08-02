@@ -33,7 +33,6 @@ describe('App', () => {
 
     const password = '123456'
     const email = 'foo@bar.com'
-    const utm = 'foogazy'
 
     fireEvent.input(getByLabelText('Email'), setValue(email))
     fireEvent.input(getByLabelText('Password'), setValue(password))
@@ -44,8 +43,7 @@ describe('App', () => {
 
     expect(axios.post).toHaveBeenCalledWith('http://localhost:5000', {
       email,
-      password,
-      utm
+      password
     })
   })
 })
